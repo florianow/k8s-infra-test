@@ -12,7 +12,6 @@ you need a Hetzner Account
 Hetzner API-Key for hcloud
 
 needed Pip Packages
--------------------
 
 ansible==3.4.0
 ansible-base==2.10.11
