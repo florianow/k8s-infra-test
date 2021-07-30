@@ -11,6 +11,16 @@ Instruction
 you need a Hetzner Account
 Hetzner API-Key for hcloud
 
+kubectl
+
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubectl
+
+
 needed Pip Packages
 
 ansible==3.4.0
@@ -36,10 +46,10 @@ clone the repo and go to ./terraform and create terraform.tfvars file
 // hcloud Token
 hcloud_token = "1234566example"
 
-// Public Key
+// Public Key Path
 public_key_path = "~/.ssh/your.pub"
 
-// Private Key
+// Private Key Path
 private_key_path = ""~/.ssh/your""
 
 // Ansible Inventory User
@@ -50,8 +60,6 @@ public_key = "ssh-ed25519 AAAADKGRFC1l........"
 
 cd ./terraform
 
-terraform init
-terraform plan
 teraform apply
 
 
