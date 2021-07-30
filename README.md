@@ -50,6 +50,8 @@ public_key = "ssh-ed25519 AAAADKGRFC1l........"
 
 cd ./terraform
 
+terraform init
+terraform plan
 teraform apply
 
 
