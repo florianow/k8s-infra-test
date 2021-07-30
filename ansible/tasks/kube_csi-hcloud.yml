@@ -1,0 +1,21 @@
+---
+- name: Create secret hcloud csi-driver
+  kubernetes.core.k8s:
+    state: present
+    template: ../templates/csi/secret.j2
+
+# Download and apply manifest
+- name: Download yaml csi-driver
+  get_url:
+    url: https://raw.githubusercontent.com/hetznercloud/csi-driver/v1.5.3/deploy/kubernetes/hcloud-csi.yml
+    dest: ../values/csi/hcloud-csi.yml
+
+- name: Create a Deployment hcloud csi-driver
+  kubernetes.core.k8s:
+    state: present
+    src: ../values/csi/hcloud-csi.yml
+
+
+
+
+

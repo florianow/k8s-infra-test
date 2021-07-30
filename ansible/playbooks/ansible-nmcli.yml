@@ -1,0 +1,26 @@
+---
+- hosts: kube_node
+  become: yes
+
+  tasks:
+
+    - name: Creating floating ip
+      copy:
+        dest: /etc/sysconfig/network-scripts/ifcfg-eth0:1
+        content: |
+          BOOTPROTO=static
+          DEVICE=eth0:1
+          IPADDR={{ float }}
+          PREFIX=32
+          TYPE=Ethernet
+          USERCTL=no
+          ONBOOT=yes
+      notify:
+      - Restart NetworkManager
+      when: ansible_distribution == "CentOS"
+
+  handlers:
+      - name: Restart NetworkManager
+        service:
+          name: NetworkManager
+          state: restarted

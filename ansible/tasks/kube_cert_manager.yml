@@ -1,0 +1,10 @@
+# Download and apply manifest
+- name: Download yaml cert-manger
+  get_url:
+    url: https://github.com/jetstack/cert-manager/releases/download/v1.4.0/cert-manager.yaml
+    dest: ../values/cert-manager/cert-manager.yml
+
+- name: Create a Deployment cert-manager
+  kubernetes.core.k8s:
+    state: present
+    src: ../values/cert-manager/cert-manager.yml

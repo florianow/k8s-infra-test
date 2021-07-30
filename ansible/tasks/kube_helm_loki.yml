@@ -1,0 +1,54 @@
+---
+- name: Add helm prometheus-community
+  kubernetes.core.helm_repository:
+    name: prometheus-community
+    repo_url: https://prometheus-community.github.io/helm-charts
+
+- name: Add helm grafana loki
+  kubernetes.core.helm_repository:
+    name: grafana
+    repo_url: https://grafana.github.io/helm-charts
+
+- name: Deploy loki
+  kubernetes.core.helm:
+    name: loki
+    chart_ref: grafana/loki
+    release_namespace: loki-stack
+    create_namespace: true
+    state: present
+    values:
+      persistence.enabled: True
+      persistence.storageClassName: hcloud-volumes
+      persistence.size: 10Gi
+
+- name: Deploy prometheus using values
+  kubernetes.core.helm:
+    name: prometheus-community
+    chart_ref: prometheus-community/prometheus
+    release_namespace: loki-stack
+    create_namespace: true
+    state: present
+    values:
+      alertmanager.persistentVolume.enabled: true
+      alertmanager.persistentVolume.size: 10Gi
+      server.persistentVolume.enabled: true
+      server.persistentVolume.size: 10Gi
+
+- name: Deploy fluent-bit chart using values
+  kubernetes.core.helm:
+    name: fluent-bit
+    chart_ref: grafana/fluent-bit
+    release_namespace: loki-stack
+    create_namespace: true
+    state: present
+
+- name: Deploy grafana chart using values
+  kubernetes.core.helm:
+    name: grafana
+    chart_ref: grafana/grafana
+    release_namespace: loki-stack
+    create_namespace: true
+    state: present
+    values:
+      ingress.enabled: true
+      ingress.hosts: {grafana.example.org}

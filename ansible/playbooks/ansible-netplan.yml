@@ -1,0 +1,40 @@
+---
+- hosts: kube_node
+  any_errors_fatal: true
+
+  pre_tasks:
+    - name: Setting host facts using complex arguments
+      set_fact:
+        netplan: true
+        cacheable: yes
+      when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+
+  roles:
+    - name: Add an Ethernet connection with static IP configuration for fip
+      role: ansible-netplan
+      become: yes
+      # This role will do nothing unless netplan_enabled is true.
+      netplan_enabled: "{{ netplan | default('false') | bool }}"
+      # This should point to an existing netplan configuration file
+      # on your system which this role will overwrite,
+      # or to a nonexistent file which netplan is aware of.
+      #
+      # The default is /etc/netplan/config.yaml.
+      netplan_config_file: /etc/netplan/floating-nodes.yaml
+
+      # Ubuntu 18.04, for example, defaults to using networkd.
+      netplan_renderer: networkd
+      # Simple network configuration to add a single network interface.
+      # Configuration defined bellow will be written to the file defined
+      # above in `netplan_config_file`.
+      netplan_configuration:
+        network:
+          version: 2
+          renderer: networkd
+          ethernets:
+            eth0:
+              addresses:
+              - "{{ ansible_default_ipv4.address }}/32"
+              - "{{ float }}/32"
+              set-name: eth0
+

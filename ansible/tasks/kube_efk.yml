@@ -1,0 +1,7 @@
+---
+#TODO changed loki
+- name: Create a efk deployment using values files
+  kubernetes.core.k8s:
+    state: absent
+    src: ../values/efk/efk_deploy.yml
+

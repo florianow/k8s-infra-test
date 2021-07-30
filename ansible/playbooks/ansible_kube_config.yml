@@ -1,0 +1,29 @@
+---
+- hosts: kube_control_plane
+  gather_facts: false
+  vars:
+     contents: "{{lookup('file', '/etc/kubernetes/admin.conf') }}"
+
+  tasks:
+    - name: register kubectl config
+      command: "cat /etc/kubernetes/admin.conf"
+      register: kube_config
+      become: yes
+
+    - name: Creates ~/.kube
+      file:
+        path: ~/.kube
+        state: directory
+      delegate_to: localhost
+
+    - copy: content="{{ kube_config.stdout }}" dest=~/.kube/config
+      delegate_to: localhost
+
+    - name: Supports a validate command
+      ansible.builtin.replace:
+        path: ~/.kube/config
+        regexp: '127.0.0.1'
+        replace: '{{ ansible_host }}'
+      delegate_to: localhost
+
+

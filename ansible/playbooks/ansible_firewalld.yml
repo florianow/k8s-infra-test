@@ -1,0 +1,45 @@
+---
+- hosts: kube_node
+  gather_facts: false
+  become: yes
+  #connection: local
+
+  tasks:
+
+    - name: install firewalld
+      dnf:
+        name: firewalld
+        state: latest
+
+    - name: internal zone
+      ansible.posix.firewalld:
+        source: 10.10.0.0/24
+        permanent: yes
+        zone: internal
+        state: enabled
+
+    # - ansible.posix.firewalld:
+    #     zone: trusted
+    #     interface: eth0
+    #     permanent: yes
+    #     state: enabled
+
+    # - name: http
+    #   ansible.posix.firewalld:
+    #     permanent: yes
+    #     service: "{{ item }}"
+    #     state: enabled
+    #   loop: "{{ base_fw_services }}"
+    #   notify:
+    #     - firewalld restart
+    #   when:
+    #     - base_firewall|bool
+
+    - name: http
+      ansible.posix.firewalld:
+        zone: external
+        service: "30000-32757/tcp"
+        permanent: yes
+        state: enabled
+
+

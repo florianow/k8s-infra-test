@@ -1,0 +1,33 @@
+---
+- hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    update_ingress_deploy: true
+
+  collections:
+   - community.kubernetes
+
+  tasks:
+
+    - name: Include pods ingress-nginx
+      include_tasks: ../tasks/kube_ingress.yml
+
+    - name: Include pods cert-manager.io
+      include_tasks: ../tasks/kube_cert_manager.yml
+
+    - name: Include pods fip-controller
+      include_tasks: ../tasks/kube_fib-controller.yml
+
+    - name: Include pods metallb
+      include_tasks: ../tasks/kube_metallb.yml
+
+    - name: Include csi drivers
+      include_tasks: ../tasks/kube_csi-hcloud.yml
+
+#TODO Trigger optional
+    # - name: ExternalDNS
+    #   include_tasks: ../tasks/kube_externaldns.yml
+
+    #- name: Include grafana loki stack
+    #  include_tasks: ../tasks/kube_helm_loki.yml
