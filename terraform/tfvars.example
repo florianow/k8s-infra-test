@@ -1,0 +1,15 @@
+// hcloud Token
+hcloud_token = ""
+
+// Public Key
+public_key_path = ""
+
+// Private Key
+private_key_path = ""
+
+// Ansible Inventory User
+ansible_user = ""
+
+// Public Key
+public_key = ""
+

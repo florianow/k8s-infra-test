@@ -1,0 +1,33 @@
+---
+# Download and apply manifest
+- name: Download values ingress-nginx
+  get_url:
+    url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.47.0/deploy/static/provider/cloud/deploy.yaml
+
+    dest: ../values/ingress/ingress-nginx.yml
+    force: true
+  when: update_ingress_deploy
+
+
+- name: Create a Deployment ingress-nginx
+  kubernetes.core.k8s:
+    state: present
+    src: ../values/ingress/ingress-nginx.yml
+
+- name: Create a annotations for metallb
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: ingress-nginx-controller
+        namespace: ingress-nginx
+        annotations:
+          metallb.universe.tf/allow-shared-ip: floating-ip
+          external-dns.alpha.kubernetes.io/hostname: raw2fu.org
+          external-dns.alpha.kubernetes.io/ttl: "120" #optional
+          #TODO problems with cert-manager
+          #service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: 'true'
+          #service.beta.kubernetes.io/do-loadbalancer-hostname: "cloud2.raw2fu.org"
+

@@ -1,0 +1,17 @@
+helm install loki grafana/loki-stack \
+  --namespace=loki-stack \
+  --set fluent-bit.enabled=true \
+  --set promtail.enabled=false \
+  --set grafana.enabled=true \
+  --set grafana.ingress.enabled=true \
+  --set grafana.ingress.hosts={grafana.example.org} \
+  --set prometheus.enabled=true \
+  --set prometheus.alertmanager.persistentVolume.enabled=true \
+  --set prometheus.alertmanager.persistentVolume.size=10Gi \
+  --set prometheus.server.persistentVolume.enabled=true \
+  --set prometheus.server.persistentVolume.size=10Gi \
+  --set loki.persistence.enabled=true \
+  --set loki.persistence.storageClassName=nfs-client  \
+  --set loki.persistence.size=10Gi
+
+  

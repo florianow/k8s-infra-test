@@ -1,0 +1,43 @@
+all:
+  vars:
+    float: ${float-ip}
+    ansible_user: ${user}
+    ansible_ssh_private_key_file: ${privkey}
+    #ansible_ssh_public_key_file: ${pubkey}
+    #ansible_ssh_common_args: "-o ControlMaster=auto -o ControlPersist=30m -o ConnectionAttempts=100 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    hcloud_token: ${hcloud_token}
+  hosts:
+%{ for index, name in name-master ~}
+    ${name}:
+      ansible_host: ${addrs-master[index]}
+      ip: ${ip-master[index]}
+%{ endfor ~}
+%{ for index, name in name-node ~}
+    ${name}:
+      ansible_host: ${addrs-node[index]}
+      ip: ${ip-node[index]}
+%{ endfor ~}
+  children:
+    kube_control_plane:
+      hosts:
+%{ for index, name in name-master ~}
+        ${name}:
+%{ endfor ~}
+    kube_node:
+      vars:
+        float: ${float-ip}
+      hosts:
+%{ for index, name in name-node ~}
+        ${name}:
+%{ endfor ~}
+    etcd:
+      hosts:
+%{ for index, name in name-master ~}
+        ${name}:
+%{ endfor ~}
+    k8s_cluster:
+      children:
+        kube_control_plane:
+        kube_node:
+    calico_rr:
+      hosts: {}

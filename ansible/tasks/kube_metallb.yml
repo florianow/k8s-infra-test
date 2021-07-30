@@ -1,0 +1,25 @@
+---
+- name: Create metallb namespace using template files
+  kubernetes.core.k8s:
+    state: present
+    template: ../templates/metallb/namespace_metallb.j2
+
+- name: Download file with custom HTTP headers
+  get_url:
+    url: https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
+    dest: ../values/metallb/metallb_deploy.yml
+
+- name: Create a metallb deployment using values files
+  kubernetes.core.k8s:
+    state: present
+    src: ../values/metallb/metallb_deploy.yml
+
+- name: metallb secret
+  command: 'kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"'
+  run_once: true
+  ignore_errors: true
+
+- name: Create metallb deployment using template files
+  kubernetes.core.k8s:
+    state: present
+    template: ../templates/metallb/configmap_metallb.j2
