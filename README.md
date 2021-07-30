@@ -7,7 +7,7 @@ it should be a full production ready secure setup for my infrastructure
 wip
 
 Instruction
------------
+
 you need a Hetzner Account
 Hetzner API-Key for hcloud
 
@@ -24,9 +24,9 @@ ruamel.yaml==0.16.10
 ruamel.yaml.clib==0.2.2
 MarkupSafe==1.1.1
 kubernetes
-----------
+
 Terraform
----------
+
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
 sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 sudo apt install terraform
